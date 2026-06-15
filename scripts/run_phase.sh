@@ -50,7 +50,7 @@ fi
 
 if [[ -f .env ]]; then set -a; source .env; set +a; fi
 
-export PYTHONPATH="$PYZ${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="$RUNTIME${PYZ:+:$PYZ}${PYTHONPATH:+:$PYTHONPATH}"
 if [[ ${#EXTRA[@]} -gt 0 ]]; then
   exec "$PY" "$SIM_MAIN" "${EXTRA[@]}" "$@"
 else

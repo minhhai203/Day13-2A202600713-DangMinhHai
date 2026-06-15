@@ -10,7 +10,12 @@ cd "$ROOT"
 PHASE="${1:-public}"
 TEAM="${TEAM:-2A202600713-DangMinhHai}"
 BIN="bin/$PHASE/observathon-score"
-EXTRA=()
+ARGS=(
+  --run run_output.json
+  --findings solution/findings.json
+  --team "$TEAM"
+  --out score.json
+)
 
 if [[ ! -f run_output.json ]]; then
   echo "[FAIL] run_output.json not found — run public sim first." >&2
@@ -30,16 +35,12 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
 fi
 
 if [[ -n "${ANSWERKEY:-}" ]]; then
-  EXTRA+=(--answerkey "$ANSWERKEY")
-elif [[ -f harness/public_answerkey.json ]] && grep -q '"qid": "pub-[0-9][0-9]"' run_output.json 2>/dev/null; then
+  ARGS+=(--answerkey "$ANSWERKEY")
+elif [[ "$PHASE" == "public" ]] && [[ -f harness/public_answerkey.json ]] \
+    && grep -q '"qid": "pub-[0-9][0-9]"' run_output.json 2>/dev/null; then
   echo "[warn] Harness qids detected (pub-01). Using harness/public_answerkey.json."
   echo "       For official leaderboard score, run bin/$PHASE/observathon-sim first."
-  EXTRA+=(--answerkey harness/public_answerkey.json)
+  ARGS+=(--answerkey harness/public_answerkey.json)
 fi
 
-exec "$BIN" \
-  --run run_output.json \
-  --findings solution/findings.json \
-  --team "$TEAM" \
-  --out score.json \
-  "${EXTRA[@]}"
+exec "$BIN" "${ARGS[@]}"

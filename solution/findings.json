@@ -1,12 +1,72 @@
 {
-  "team": "TODO-team-name",
+  "team": "2A202600713-DangMinhHai",
   "schema_version": 1,
   "findings": [
     {
+      "fault_class": "arithmetic_error",
+      "evidence": {"metric": "wrong_total_rate", "observed": "pub-01 used shipping weight 2.0 kg instead of 0.5*2 and returned 39635000 before validation", "trace_ids": ["req-25ad0ac6"]},
+      "root_cause": "The agent did not derive shipping weight from stock weight and quantity.",
+      "suggested_fix": "Prompt states weight_kg=stock.weight_kg*qty; wrapper rejects mismatched shipping observations and recomputes totals."
+    },
+    {
+      "fault_class": "tool_overuse",
+      "evidence": {"metric": "repeated_tools", "observed": "pub-13 called calc_shipping twice in one request", "trace_ids": ["req-b91fe020"]},
+      "root_cause": "The model called shipping before waiting for stock weight, then corrected itself.",
+      "suggested_fix": "Require sequential tool calls, cap tool_budget at 3, and flag duplicate tool names."
+    },
+    {
+      "fault_class": "tool_failure",
+      "evidence": {"metric": "tool_errors", "observed": "public traces include item_not_found and destination_not_served observations", "trace_ids": ["req-3e0cf0e6", "req-03d15a89"]},
+      "root_cause": "Business failures and transient failures were not distinguished.",
+      "suggested_fix": "Refuse on business errors; retry only transient upstream/tool/timeout errors."
+    },
+    {
+      "fault_class": "error_spike",
+      "evidence": {"metric": "configured_tool_error_rate", "observed": "shipped config injected random tool errors at rate 0.18", "trace_ids": ["req-2a066ac2", "req-9df6d58b"]},
+      "root_cause": "Non-zero simulated tool_error_rate creates avoidable failures and retries.",
+      "suggested_fix": "Set tool_error_rate=0.0 and retain bounded retry for genuine transient errors."
+    },
+    {
+      "fault_class": "cost_blowup",
+      "evidence": {"metric": "total_tokens", "observed": "public baseline consumed 153929 tokens; shortened prompt/context run consumed 89215", "trace_ids": ["req-25ad0ac6", "req-f16c30ba"]},
+      "root_cause": "Verbose prompt/examples and context_size=12 inflated repeated prompt tokens.",
+      "suggested_fix": "Use a compact prompt, no redundant few-shot examples, context_size=6, and economy tier."
+    },
+    {
       "fault_class": "latency_spike",
-      "evidence": {"metric": "latency_p95_ms", "observed": "TODO from your telemetry", "trace_ids": []},
-      "root_cause": "TODO: what config knob or behavior causes it?",
-      "suggested_fix": "TODO: config change and/or wrapper mitigation"
+      "evidence": {"metric": "latency_p95_ms", "observed": "baseline public P95 was about 12.4s; retries and duplicate tools increased the long tail", "trace_ids": ["req-3c9ddb45", "req-dee4cc96"]},
+      "root_cause": "Unnecessary tools, large context, and retries add serial model/tool latency.",
+      "suggested_fix": "Reduce context and completion caps, prevent duplicate tools, cache repeats, and retry only transient failures."
+    },
+    {
+      "fault_class": "quality_drift",
+      "evidence": {"metric": "session_drift_rate", "observed": "shipped config intentionally applied session_drift_rate=0.06", "trace_ids": ["req-84c04b6a"]},
+      "root_cause": "Injected drift can corrupt later turns without reset.",
+      "suggested_fix": "Set session_drift_rate=0.0 and rotate session context periodically."
+    },
+    {
+      "fault_class": "infinite_loop",
+      "evidence": {"metric": "loop_guard", "observed": "shipped loop_guard=false and max_steps=12 allowed repeated actions", "trace_ids": ["req-c2418346"]},
+      "root_cause": "No loop guard or practical tool cap.",
+      "suggested_fix": "Enable loop_guard, lower max_steps, cap tools, and log repeated tool names."
+    },
+    {
+      "fault_class": "pii_leak",
+      "evidence": {"metric": "pii_in_raw_answer", "observed": "pub-13 raw agent answer contained customer PII before wrapper redaction", "trace_ids": ["req-b1189039", "req-b91fe020"]},
+      "root_cause": "The model echoed contact data from the order.",
+      "suggested_fix": "Forbid PII echo in the prompt and redact the final answer."
+    },
+    {
+      "fault_class": "fabrication",
+      "evidence": {"metric": "refusal_correctness", "observed": "AirPods is out of stock and Samsung is not found; totals must not be emitted", "trace_ids": ["req-de7b22cf", "req-3e0cf0e6"]},
+      "root_cause": "The shipped prompt demanded a total without grounding on stock results.",
+      "suggested_fix": "Use only tool observations and emit no total for unknown, unavailable, insufficient-stock, or unserved orders."
+    },
+    {
+      "fault_class": "prompt_injection",
+      "evidence": {"metric": "injection_risk", "observed": "private specification embeds fake system prices or instructions in order notes", "trace_ids": ["req-5a7082c8"]},
+      "root_cause": "Untrusted note text can be interpreted as higher-priority instructions.",
+      "suggested_fix": "Sanitize note/instruction suffixes and require all prices to come only from check_stock."
     }
   ]
 }

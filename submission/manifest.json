@@ -1,1 +1,5 @@
-{"team": "TODO", "members": [], "notes": ""}
+{
+  "team": "2A202600713-DangMinhHai",
+  "members": ["Dang Minh Hai"],
+  "notes": "Observathon Day 13 — config + prompt + wrapper mitigations with telemetry logging."
+}

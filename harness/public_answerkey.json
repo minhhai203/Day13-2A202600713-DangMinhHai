@@ -1,0 +1,106 @@
+{
+  "pub-01": {
+    "spec": {
+      "item": "iphone",
+      "qty": 2,
+      "coupon": "WINNER",
+      "dest": "ha noi"
+    }
+  },
+  "pub-02": {
+    "spec": {
+      "item": "macbook",
+      "qty": 1,
+      "coupon": null,
+      "dest": "tp hcm"
+    }
+  },
+  "pub-03": {
+    "spec": {
+      "item": "ipad",
+      "qty": 1,
+      "coupon": null,
+      "dest": null
+    }
+  },
+  "pub-04": {
+    "spec": {
+      "item": "iphone",
+      "qty": 3,
+      "coupon": "VIP20",
+      "dest": "da nang"
+    }
+  },
+  "pub-05": {
+    "spec": {
+      "item": "airpods",
+      "qty": 1,
+      "coupon": null,
+      "dest": "ha noi"
+    }
+  },
+  "pub-06": {
+    "spec": {
+      "item": "iphone",
+      "qty": 2,
+      "coupon": "EXPIRED",
+      "dest": "ha noi"
+    }
+  },
+  "pub-07": {
+    "spec": {
+      "item": "samsung",
+      "qty": 1,
+      "coupon": null,
+      "dest": "ha noi"
+    }
+  },
+  "pub-08": {
+    "spec": {
+      "item": "iphone",
+      "qty": 2,
+      "coupon": null,
+      "dest": "da lat"
+    }
+  },
+  "pub-09": {
+    "spec": {
+      "item": "iphone",
+      "qty": 2,
+      "coupon": "WINNER",
+      "dest": "tp hcm"
+    }
+  },
+  "pub-10": {
+    "spec": {
+      "item": "macbook",
+      "qty": 1,
+      "coupon": "SALE15",
+      "dest": "hai phong"
+    }
+  },
+  "pub-11": {
+    "spec": {
+      "item": "iphone",
+      "qty": 2,
+      "coupon": "WINNER",
+      "dest": "ha noi"
+    }
+  },
+  "pub-12": {
+    "spec": {
+      "item": "iphone",
+      "qty": 2,
+      "coupon": "WINNER",
+      "dest": "ha noi"
+    }
+  },
+  "pub-13": {
+      "spec": {
+        "item": "iphone",
+        "qty": 1,
+        "coupon": null,
+        "dest": "ha noi"
+      }
+    }
+}

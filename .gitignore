@@ -1,5 +1,7 @@
 # binaries are distributed separately per phase (NOT in the public repo)
 bin/
+.runtime/
+vendor/
 # python / runtime
 __pycache__/
 *.pyc
